@@ -15,8 +15,8 @@ class Article:
 
                 if self._title and self.author and self.magazine:
                     self.all.append(self)
-                    author._articles.append(self)
-                    magazine._articles.append(self)
+                    author._articles.append(self) # Adds the article to the author's list of articles
+                    magazine._articles.append(self) # Adds the article to the magazine's list of articles
 
             @property
             def title(self):
@@ -51,17 +51,18 @@ class Author:
                     self._name = None
                 else:
                     self._name = name
-                self._articles = []
+                self._articles = [] # List to hold articles written by the author
 
             @property
             def name(self):
                 return self._name
 
             def articles(self):
-                return self._articles
+                return self._articles # Returns all articles written by the author
 
             def magazines(self):
-                return list(set(article.magazine for article in self._articles))
+                return list(set(article.magazine for article in self._articles))  # Returns a list of magazines the author has written for
+
 
             def add_article(self, magazine, title):
                 if not isinstance(magazine, Magazine):
@@ -74,7 +75,7 @@ class Author:
             def topic_areas(self):
                 if not self._articles:
                     return None
-                return list(set(article.magazine.category for article in self._articles))
+                return list(set(article.magazine.category for article in self._articles)) # Returns a list of topic areas the author has written about
 
 class Magazine:
             def __init__(self, name, category):
@@ -88,7 +89,7 @@ class Magazine:
                     self._category = None
                 else:
                     self._category = category
-                self._articles = []
+                self._articles = []  # List to hold articles published in the magazine
 
             @property
             def name(self):
@@ -113,14 +114,15 @@ class Magazine:
                 self._category = value
 
             def articles(self):
-                return self._articles
+                return self._articles # Returns all articles published in the magazine
 
             def contributors(self):
-                return list(set(article.author for article in self._articles))
+                return list(set(article.author for article in self._articles))  # Returns a list of contributors (authors) who have written for the magazine
 
             def article_titles(self):
                 titles = [article.title for article in self._articles]
-                return titles if titles else None
+                return titles if titles else None # Returns a list of article titles in the magazine
+
 
             def contributing_authors(self):
                 author_counts = {}
@@ -128,7 +130,7 @@ class Magazine:
                     if article.author not in author_counts:
                         author_counts[article.author] = 0
                     author_counts[article.author] += 1
-                return [author for author, count in author_counts.items() if count > 2] or None
-                magazine._articles.append(self)
+                return [author for author, count in author_counts.items() if count > 2] or None # Returns authors who have contributed more than 2 articles
+                
 
    
