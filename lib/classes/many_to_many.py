@@ -2,15 +2,9 @@ class Article:
     all = []  # Class-level list to keep track of all Article instances
 
     def __init__(self, author, magazine, title):
-        
-        if not isinstance(title, str) or not (5 <= len(title) <= 50):
-            raise ValueError("Title must be a string with 5 to 50 characters")
-        
-        if not isinstance(author, Author):
-            raise ValueError("Author must be an instance of Author")
-        
-        if not isinstance(magazine, Magazine):
-            raise ValueError("Magazine must be an instance of Magazine")
+        self._check_title(title)
+        self._check_author(author)
+        self._check_magazine(magazine)
 
         self._title = title
         self.author = author
@@ -20,6 +14,18 @@ class Article:
         self.all.append(self)
         author._articles.append(self)
         magazine._articles.append(self)
+
+    def _check_title(self, title):
+        if not isinstance(title, str) or not (5 <= len(title) <= 50):
+            raise ValueError("Title must be a string with 5 to 50 characters")
+
+    def _check_author(self, author):
+        if not isinstance(author, Author):
+            raise ValueError("Author must be an instance of Author")
+
+    def _check_magazine(self, magazine):
+        if not isinstance(magazine, Magazine):
+            raise ValueError("Magazine must be an instance of Magazine")
 
     @property
     def title(self):
@@ -31,8 +37,7 @@ class Article:
 
     @author.setter
     def author(self, value):
-        if not isinstance(value, Author):
-            raise ValueError("Author must be an instance of Author")
+        self._check_author(value)
         self._author = value
 
     @property
@@ -41,17 +46,18 @@ class Article:
 
     @magazine.setter
     def magazine(self, value):
-        if not isinstance(value, Magazine):
-            raise ValueError("Magazine must be an instance of Magazine")
+        self._check_magazine(value)
         self._magazine = value
 
 class Author:
     def __init__(self, name):
-    
-        if not isinstance(name, str) or len(name) == 0:
-            raise ValueError("Name must be a non-empty string")
+        self._validate_name(name)
         self._name = name
         self._articles = []  # List to hold articles written by the author
+
+    def _validate_name(self, name):
+        if not isinstance(name, str) or len(name) == 0:
+            raise ValueError("Name must be a non-empty string")
 
     @property
     def name(self):
@@ -66,8 +72,6 @@ class Author:
 
     def add_article(self, magazine, title):
         # Association method: Create and associate a new Article instance
-        if not isinstance(magazine, Magazine):
-            raise ValueError("Magazine must be an instance of Magazine")
         article = Article(self, magazine, title)
         return article
 
@@ -81,18 +85,22 @@ class Magazine:
     all_magazines = []  # Class-level list to keep track of all Magazine instances
 
     def __init__(self, name, category):
-        # Validate name
+        self._validate_name(name)
+        self._validate_category(category)
+        
+        self._name = name
+        self._category = category
+        self._articles = []  # List to hold articles published in the magazine
+
+        Magazine.all_magazines.append(self)  # Add the new magazine to the class-level list
+
+    def _validate_name(self, name):
         if not isinstance(name, str) or not (2 <= len(name) <= 16):
             raise ValueError("Name must be a string with 2 to 16 characters")
-        self._name = name
 
-        # Validate category
+    def _validate_category(self, category):
         if not isinstance(category, str) or len(category) == 0:
             raise ValueError("Category must be a non-empty string")
-        self._category = category
-
-        self._articles = []  # List to hold articles published in the magazine
-        Magazine.all_magazines.append(self)  # Add the new magazine to the class-level list
 
     @property
     def name(self):
@@ -100,9 +108,7 @@ class Magazine:
 
     @name.setter
     def name(self, value):
-        # Validate name
-        if not isinstance(value, str) or not (2 <= len(value) <= 16):
-            raise ValueError("Name must be a string with 2 to 16 characters")
+        self._validate_name(value)
         self._name = value
 
     @property
@@ -111,9 +117,7 @@ class Magazine:
 
     @category.setter
     def category(self, value):
-        # Validate category
-        if not isinstance(value, str) or len(value) == 0:
-            raise ValueError("Category must be a non-empty string")
+        self._validate_category(value)
         self._category = value
 
     def articles(self):
